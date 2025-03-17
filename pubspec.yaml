@@ -1,13 +1,17 @@
 name: comments_remover
-description: A Dart package to remove single-line (//) and multi-line (/* */) comments from Dart files in a Flutter project.
+description: A command-line tool to remove comments from Dart files in a Flutter project.
 version: 1.0.0
-repository: https://github.com/benouarAbdou/comments_remover_flutter_package
+repository: https://github.com/yourusername/comments_remover
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  path: ^1.8.0  # For file path manipulation
+  args: ^2.3.0
+  path: ^1.8.0
 
 dev_dependencies:
   test: ^1.16.0
+
+executables:
+  comments_remover: main  # Maps "comments_remover" command to bin/main.dart

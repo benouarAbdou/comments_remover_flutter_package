@@ -8,8 +8,8 @@ void main() {
     tempFile.writeAsStringSync(
         'void main() { // Test comment\n  print("Hello");\n}');
     CommentsRemover.removeComments(
-      options: CommentOptions(
-          specificFile: 'test_temp.dart', removeMultiLine: false),
+      path: 'test_temp.dart',
+      options: CommentOptions(removeMultiLine: false),
     );
     final content = tempFile.readAsStringSync();
     expect(content, equals('void main() { \n  print("Hello");\n}'));
@@ -21,8 +21,8 @@ void main() {
     tempFile.writeAsStringSync(
         'void main() {/* Multi-line\ncomment */ print("Hello");}');
     CommentsRemover.removeComments(
-      options: CommentOptions(
-          specificFile: 'test_temp.dart', removeSingleLine: false),
+      path: 'test_temp.dart',
+      options: CommentOptions(removeSingleLine: false),
     );
     final content = tempFile.readAsStringSync();
     expect(content, equals('void main() { print("Hello");}'));
