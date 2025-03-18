@@ -1,6 +1,5 @@
-import 'package:args/args.dart';
-import 'package:path/path.dart' as path;
 import 'dart:io';
+import 'package:args/args.dart';
 
 void main(List<String> arguments) {
   final parser = ArgParser()
@@ -19,7 +18,7 @@ void main(List<String> arguments) {
   final removeSingleLine = results['single-line'] as bool;
   final removeMultiLine = results['multi-line'] as bool;
 
-  // If neither flag is set, remove both types of comments
+  
   final shouldRemoveSingleLine =
       removeSingleLine || (!removeSingleLine && !removeMultiLine);
   final shouldRemoveMultiLine =
@@ -43,49 +42,94 @@ void main(List<String> arguments) {
 }
 
 void processDirectory(
-    Directory dir, bool shouldRemoveSingleLine, bool shouldRemoveMultiLine) {
+    Directory dir, bool removeSingleLine, bool removeMultiLine) {
   final entities = dir.listSync(recursive: true);
-
   for (var entity in entities) {
     if (entity is File && entity.path.endsWith('.dart')) {
-      processFile(entity, shouldRemoveSingleLine, shouldRemoveMultiLine);
+      processFile(entity, removeSingleLine, removeMultiLine);
     }
   }
 }
 
-void processFile(
-    File file, bool shouldRemoveSingleLine, bool shouldRemoveMultiLine) {
-  final content = file.readAsStringSync();
-  final lines = content.split('\n');
-  final processedLines = <String>[];
 
+void processFile(File file, bool removeSingleLine, bool removeMultiLine) {
+  final content = file.readAsStringSync();
+  final newContent = removeComments(content, removeSingleLine, removeMultiLine);
+  file.writeAsStringSync(newContent);
+  print('Comments removed from ${file.path}');
+}
+
+
+
+String removeComments(
+    String code, bool removeSingleLine, bool removeMultiLine) {
+  final buffer = StringBuffer();
+  bool inString = false;
+  String? stringDelimiter; 
+  bool inSingleLineComment = false;
   bool inMultiLineComment = false;
 
-  for (var line in lines) {
-    if (inMultiLineComment) {
-      if (line.contains('*/')) {
-        inMultiLineComment = false;
-        line = line.substring(line.indexOf('*/') + 2);
-      } else {
-        continue;
+  for (int i = 0; i < code.length; i++) {
+    
+    if (inSingleLineComment) {
+      if (code[i] == '\n') {
+        inSingleLineComment = false;
+        buffer.write('\n');
       }
+      continue;
     }
 
-    if (shouldRemoveMultiLine && line.contains('/*')) {
+    
+    if (inMultiLineComment) {
+      if (i < code.length - 1 && code[i] == '*' && code[i + 1] == '/') {
+        inMultiLineComment = false;
+        i++; 
+      }
+      continue;
+    }
+
+    
+    if (inString) {
+      buffer.write(code[i]);
+      
+      if (code[i] == stringDelimiter && (i == 0 || code[i - 1] != '\\')) {
+        inString = false;
+        stringDelimiter = null;
+      }
+      continue;
+    }
+
+    // Check if a string literal starts.
+    if (code[i] == '"' || code[i] == '\'') {
+      inString = true;
+      stringDelimiter = code[i];
+      buffer.write(code[i]);
+      continue;
+    }
+
+    // Check for the start of a single-line comment.
+    if (removeSingleLine &&
+        i < code.length - 1 &&
+        code[i] == '/' &&
+        code[i + 1] == '/') {
+      inSingleLineComment = true;
+      i++; // Skip second '/'
+      continue;
+    }
+
+    // Check for the start of a multi-line comment.
+    if (removeMultiLine &&
+        i < code.length - 1 &&
+        code[i] == '/' &&
+        code[i + 1] == '*') {
       inMultiLineComment = true;
-      line = line.substring(0, line.indexOf('/*'));
+      i++; // Skip '*'
+      continue;
     }
 
-    // Remove single-line comments
-    if (shouldRemoveSingleLine && line.contains('//')) {
-      line = line.substring(0, line.indexOf('//'));
-    }
-
-    if (line.trim().isNotEmpty) {
-      processedLines.add(line);
-    }
+    // Otherwise, just copy the character.
+    buffer.write(code[i]);
   }
 
-  file.writeAsStringSync(processedLines.join('\n'));
-  print('Comments removed from ${file.path}');
+  return buffer.toString();
 }
