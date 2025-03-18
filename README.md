@@ -15,65 +15,63 @@ Comments are invaluable during development for documentation and debugging, but 
 
 ### Prerequisites
 Ensure you have Dart installed. You can check by running:
-```bash
+
+```sh
 dart --version
 ```
+
 If Dart is not installed, follow the [official installation guide](https://dart.dev/get-dart).
 
 ### Installing the Package
 
-1. Clone this repository or download the source code:
-   ```bash
-   git clone https://github.com/benouarAbdou/comments_remover_flutter_package
-   cd comments_remover_flutter_package
-   ```
-2. Install dependencies:
-   ```bash
-   dart pub get
-   ```
-3. Activate the package locally:
-   ```bash
-   dart pub global activate --source path .
-   ```
+Install the package globally using Dart's package manager:
+
+```sh
+dart pub global activate comments_remover
+```
 
 ## Usage
 
-### Basic Usage
+### Remove Comments from Dart Files
 
-Remove all comments from all Dart files in the `lib` directory:
-```bash
-dart run comments_remover
+By default, `comments_remover` processes all Dart files in the `lib/` directory.
+
+```sh
+dart pub global run comments_remover
 ```
 
 ### Command Options
 
-| Option | Description |
-|--------|-------------|
-| `--path` | Specify a target file or directory to process. Defaults to `lib/`. |
-| `--single-line` | Remove only single-line comments (`//`). |
-| `--multi-line`  | Remove only multi-line comments (`/* */`). |
+| Option        | Description                                           |
+|--------------|-------------------------------------------------------|
+| `--path`      | Specify a target file or directory (defaults to `lib/`). |
+| `--single-line` | Remove only single-line comments (`//`).              |
+| `--multi-line`  | Remove only multi-line comments (`/* */`).            |
 
-#### Example Commands
+### Examples
 
 1. Remove all comments from a specific file:
-   ```bash
-   dart run comments_remover --path lib/main.dart
+   
+   ```sh
+   dart pub global run comments_remover --path lib/main.dart
    ```
 
-2. Remove only single-line comments from all Dart files in `lib`:
-   ```bash
-   dart run comments_remover --single-line
+2. Remove only single-line comments from all Dart files in `lib/`:
+   
+   ```sh
+   dart pub global run comments_remover --single-line
    ```
 
 3. Remove only multi-line comments from a specific directory:
-   ```bash
-   dart run comments_remover --path lib/src --multi-line
+   
+   ```sh
+   dart pub global run comments_remover --path lib/src --multi-line
    ```
-
 
 ## Example Output
 
 ### Input File (Before):
+
 ```dart
 // This is a single-line comment
 void main() {
@@ -84,6 +82,7 @@ void main() {
 ```
 
 ### Output File (After):
+
 ```dart
 void main() {
   print("Hello");
@@ -104,3 +103,4 @@ Feel free to open issues for bug reports, feature requests, or suggestions.
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
