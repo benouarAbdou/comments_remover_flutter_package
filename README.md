@@ -1,19 +1,36 @@
 # Comments Remover
 
-A command-line tool to remove comments from Dart files in a Flutter project. Simplify your codebase by stripping out single-line (`//`) and multi-line (`/* */`) comments, either from a specific file or an entire directory.
+A powerful command-line tool for removing comments from Dart files in your Flutter projects. Whether you need a cleaner codebase for production, code reviews, or learning purposes, **Comments Remover** helps you strip out single-line (`//`) and multi-line (`/* */`) comments effortlessly.
 
 ## Why Use Comments Remover?
 
-Comments are essential during development for documentation and debugging, but there are scenarios where removing them is beneficial:
-- **Minification**: Reduce file size for production builds or analysis
-- **Code Review**: Focus on the logic without comment distractions
-- **Learning**: Clean up example projects (e.g., the default Flutter counter app) to study core functionality
-- **Obfuscation**: Remove sensitive or unnecessary annotations before sharing code
+Comments are invaluable during development for documentation and debugging, but there are cases where removing them is useful:
+
+- **Minification**: Reduce file size for production builds, improving performance and readability.
+- **Code Review**: Focus on logic and structure without distractions from comments.
+- **Learning**: Clean up example projects (e.g., Flutter templates) to study core functionality without extra explanations.
+- **Obfuscation**: Remove sensitive or unnecessary annotations before sharing code or submitting assignments.
 
 ## Installation
 
-1. Clone this repository or download the source code
-2. Run `dart pub get` to install dependencies
+### Prerequisites
+Ensure you have Dart installed. You can check by running:
+```bash
+dart --version
+```
+If Dart is not installed, follow the [official installation guide](https://dart.dev/get-dart).
+
+### Installing the Package
+
+1. Clone this repository or download the source code:
+   ```bash
+   git clone https://github.com/benouarAbdou/comments_remover_flutter_package
+   cd comments_remover_flutter_package
+   ```
+2. Install dependencies:
+   ```bash
+   dart pub get
+   ```
 3. Activate the package locally:
    ```bash
    dart pub global activate --source path .
@@ -30,30 +47,20 @@ dart run comments_remover
 
 ### Command Options
 
-- `--path` or `-p`: Specify the target path (file or directory)
-  ```bash
-  dart run comments_remover --path lib/main.dart
-  dart run comments_remover --path lib/
-  ```
+| Option | Description |
+|--------|-------------|
+| `--path` | Specify a target file or directory to process. Defaults to `lib/`. |
+| `--single-line` | Remove only single-line comments (`//`). |
+| `--multi-line`  | Remove only multi-line comments (`/* */`). |
 
-- `--single-line` or `-s`: Remove only single-line comments (//)
-  ```bash
-  dart run comments_remover --single-line
-  ```
-
-- `--multi-line` or `-m`: Remove only multi-line comments (/* */)
-  ```bash
-  dart run comments_remover --multi-line
-  ```
-
-### Examples
+#### Example Commands
 
 1. Remove all comments from a specific file:
    ```bash
    dart run comments_remover --path lib/main.dart
    ```
 
-2. Remove only single-line comments from all files in lib:
+2. Remove only single-line comments from all Dart files in `lib`:
    ```bash
    dart run comments_remover --single-line
    ```
@@ -63,28 +70,10 @@ dart run comments_remover
    dart run comments_remover --path lib/src --multi-line
    ```
 
-4. Remove all comments from all Dart files in the current directory:
-   ```bash
-   dart run comments_remover --path .
-   ```
-
-## Testing
-
-Run the test suite:
-```bash
-dart test
-```
-
-The test suite includes:
-- Single-line comment removal
-- Multi-line comment removal
-- Combined comment removal
-- Directory processing
-- Edge cases and special scenarios
 
 ## Example Output
 
-Before:
+### Input File (Before):
 ```dart
 // This is a single-line comment
 void main() {
@@ -94,7 +83,7 @@ void main() {
 }
 ```
 
-After (with all comments removed):
+### Output File (After):
 ```dart
 void main() {
   print("Hello");
@@ -103,8 +92,15 @@ void main() {
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+We welcome contributions! Here’s how you can help:
+
+1. Fork the repository.
+2. Create a new branch for your feature or fix.
+3. Commit your changes with clear commit messages.
+4. Push to your fork and submit a Pull Request.
+
+Feel free to open issues for bug reports, feature requests, or suggestions.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for more details.

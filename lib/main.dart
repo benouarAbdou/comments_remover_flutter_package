@@ -1,9 +1,15 @@
 void main() {
-  
+/*
+hsqfkhqsfkhqskh
 
-  
-  
-  
+*/
+//sjfjsqjkfmlq
+//sjfjsqjkfmlq
+//    sjfjsqjkfmlq
+//
+/*slfjkldjqfljqdsfjdljsqf*/
 
-  print("//object/**/"); 
+  /*slfjkldjqfljqdsfjdljsqf   */
+
+  /*fqsdfqd*/ print("//object/**/"); //slqflfkldqfdq
 }
