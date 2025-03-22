@@ -18,7 +18,6 @@ void main(List<String> arguments) {
   final removeSingleLine = results['single-line'] as bool;
   final removeMultiLine = results['multi-line'] as bool;
 
-  
   final shouldRemoveSingleLine =
       removeSingleLine || (!removeSingleLine && !removeMultiLine);
   final shouldRemoveMultiLine =
@@ -51,7 +50,6 @@ void processDirectory(
   }
 }
 
-
 void processFile(File file, bool removeSingleLine, bool removeMultiLine) {
   final content = file.readAsStringSync();
   final newContent = removeComments(content, removeSingleLine, removeMultiLine);
@@ -59,77 +57,76 @@ void processFile(File file, bool removeSingleLine, bool removeMultiLine) {
   print('Comments removed from ${file.path}');
 }
 
-
-
 String removeComments(
     String code, bool removeSingleLine, bool removeMultiLine) {
   final buffer = StringBuffer();
   bool inString = false;
-  String? stringDelimiter; 
+  String? stringDelimiter;
   bool inSingleLineComment = false;
   bool inMultiLineComment = false;
 
-  for (int i = 0; i < code.length; i++) {
-    
-    if (inSingleLineComment) {
-      if (code[i] == '\n') {
-        inSingleLineComment = false;
-        buffer.write('\n');
-      }
+  List<String> lines = code.split('\n');
+  List<String> resultLines = [];
+
+  for (var line in lines) {
+    String trimmedLine = line.trim();
+
+    // Skip full-line comments
+    if (removeSingleLine && trimmedLine.startsWith('//')) {
       continue;
     }
-
-    
-    if (inMultiLineComment) {
-      if (i < code.length - 1 && code[i] == '*' && code[i + 1] == '/') {
-        inMultiLineComment = false;
-        i++; 
-      }
-      continue;
-    }
-
-    
-    if (inString) {
-      buffer.write(code[i]);
-      
-      if (code[i] == stringDelimiter && (i == 0 || code[i - 1] != '\\')) {
-        inString = false;
-        stringDelimiter = null;
-      }
-      continue;
-    }
-
-    // Check if a string literal starts.
-    if (code[i] == '"' || code[i] == '\'') {
-      inString = true;
-      stringDelimiter = code[i];
-      buffer.write(code[i]);
-      continue;
-    }
-
-    // Check for the start of a single-line comment.
-    if (removeSingleLine &&
-        i < code.length - 1 &&
-        code[i] == '/' &&
-        code[i + 1] == '/') {
-      inSingleLineComment = true;
-      i++; // Skip second '/'
-      continue;
-    }
-
-    // Check for the start of a multi-line comment.
     if (removeMultiLine &&
-        i < code.length - 1 &&
-        code[i] == '/' &&
-        code[i + 1] == '*') {
-      inMultiLineComment = true;
-      i++; // Skip '*'
+        trimmedLine.startsWith('/*') &&
+        trimmedLine.endsWith('*/')) {
       continue;
     }
 
-    // Otherwise, just copy the character.
-    buffer.write(code[i]);
+    StringBuffer newLine = StringBuffer();
+    for (int i = 0; i < line.length; i++) {
+      if (inSingleLineComment) {
+        break;
+      }
+      if (inMultiLineComment) {
+        if (i < line.length - 1 && line[i] == '*' && line[i + 1] == '/') {
+          inMultiLineComment = false;
+          i++;
+        }
+        continue;
+      }
+      if (inString) {
+        newLine.write(line[i]);
+        if (line[i] == stringDelimiter && (i == 0 || line[i - 1] != '\\')) {
+          inString = false;
+          stringDelimiter = null;
+        }
+        continue;
+      }
+      if (line[i] == '"' || line[i] == "'") {
+        inString = true;
+        stringDelimiter = line[i];
+        newLine.write(line[i]);
+        continue;
+      }
+      if (removeSingleLine &&
+          i < line.length - 1 &&
+          line[i] == '/' &&
+          line[i + 1] == '/') {
+        break;
+      }
+      if (removeMultiLine &&
+          i < line.length - 1 &&
+          line[i] == '/' &&
+          line[i + 1] == '*') {
+        inMultiLineComment = true;
+        i++;
+        continue;
+      }
+      newLine.write(line[i]);
+    }
+    if (newLine.isNotEmpty || trimmedLine.isEmpty) {
+      resultLines.add(newLine.toString());
+    }
   }
 
-  return buffer.toString();
+  return resultLines.join('\n');
 }

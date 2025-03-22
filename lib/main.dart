@@ -9,7 +9,5 @@ hsqfkhqsfkhqskh
 //
 /*slfjkldjqfljqdsfjdljsqf*/
 
-  /*slfjkldjqfljqdsfjdljsqf   */
-
-  /*fqsdfqd*/ print("//object/**/"); //slqflfkldqfdq
+  print("//object/**/");
 }
